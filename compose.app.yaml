@@ -1,0 +1,37 @@
+# Non-demo development profile. Public deployment uses compose.production.yaml.
+services:
+  api:
+    build: .
+    env_file:
+      - path: .env
+        required: true
+    command: sh -c "python manage.py migrate && python manage.py disable_local_mode && python manage.py seed_platforms && python manage.py bootstrap_provider_connections && gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2 --access-logfile -"
+    environment:
+      DJANGO_DEBUG: "1"
+      DEMO_MODE: "0"
+      JUWA2_MOCK: "0"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,api"
+      DJANGO_CSRF_TRUSTED_ORIGINS: "http://localhost:3000"
+      FRONTEND_URL: "http://localhost:3000"
+      DATABASE_URL: "postgresql://lavish:lavish@postgres:5432/lavishsweeps"
+      REDIS_URL: "redis://redis:6379/0"
+      DJANGO_EMAIL_BACKEND: "django.core.mail.backends.console.EmailBackend"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/ready/',timeout=3).read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "127.0.0.1:8001:8000"
+  frontend:
+    build: ../frontend
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3000:3000"

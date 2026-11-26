@@ -1,0 +1,27 @@
+{
+  "name": "lavishsweeps-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test",
+    "format:check": "prettier --check \"components/**/*.tsx\" \"lib/**/*.ts\" \"app/**/*.tsx\" \"tests/**/*.ts\" \"*.ts\""
+  },
+  "dependencies": {
+    "lucide-react": "^0.468.0",
+    "next": "^16.4.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "prettier": "^3.10.1",
+    "typescript": "^5.0.0"
+  }
+}
